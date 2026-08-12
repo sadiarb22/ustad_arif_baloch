@@ -1,0 +1,6 @@
+{
+  "name": "Ustad Arif Baloch Songs",
+  "description": "A deeply nostalgic, cinematic Balochi musical experience celebrating the legendary Ustad Arif Baloch with interactive cassette tape player, desert night ambiance, Rabab sound synthesis, and curated YouTube songs.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

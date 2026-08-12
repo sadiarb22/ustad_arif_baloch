@@ -1,0 +1,1382 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ustad Arif Baloch Songs - Balochi Musical Nostalgia</title>
+    <meta name="description" content="A nostalgic, immersive musical tribute to legendary Balochi folk singer Ustad Arif Baloch. Interactive cassette tape deck, Rabab sound synthesis, desert night ambiance, and timeless songs." />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Noto+Nastaliq+Urdu:wght@400;700&family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS v3 CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              frosted: {
+                dark: '#120c08',
+                card: '#1a120c',
+                cream: '#f5f2ed',
+                gold: '#d9b382',
+                bronze: '#8c6a4a',
+                terracotta: '#8c4a2a',
+                wood: '#3d2b1f',
+                leather: '#2a1b0a'
+              }
+            },
+            fontFamily: {
+              serif: ['Cinzel', 'serif'],
+              sans: ['Outfit', 'sans-serif'],
+              mono: ['Space Grotesk', 'monospace'],
+              urdu: ['Noto Nastaliq Urdu', 'serif']
+            },
+            animation: {
+              'spin-slow': 'spin 12s linear infinite',
+              'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+              'float': 'float 6s ease-in-out infinite',
+              'tape-reel': 'tapeReel 2s linear infinite'
+            },
+            keyframes: {
+              pulseGlow: {
+                '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
+                '50%': { opacity: '0.8', transform: 'scale(1.05)' }
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0px)' },
+                '50%': { transform: 'translateY(-8px)' }
+              }
+            }
+          }
+        }
+      }
+    </script>
+    
+    <style>
+      body {
+        background-color: #120c08;
+        color: #f5f2ed;
+      }
+
+      /* Custom Frosted Glass Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #120c08;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #3d2b1f;
+        border-radius: 4px;
+        border: 1px solid rgba(217, 179, 130, 0.3);
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #d9b382;
+      }
+
+      .bg-frosted-radial {
+        background-image: radial-gradient(circle at 20% 30%, #4a2c1a 0%, transparent 50%), radial-gradient(circle at 80% 70%, #2c1a0f 0%, transparent 50%);
+      }
+
+      .glass-card {
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      }
+
+      .glass-player {
+        background: rgba(18, 12, 8, 0.88);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
+      }
+
+      .vertical-rl {
+        writing-mode: vertical-rl;
+      }
+
+      /* Rabab Strings glowing animations */
+      .string-line {
+        transition: transform 0.05s ease-out, filter 0.2s ease;
+      }
+      .string-active {
+        animation: stringVibrate 0.3s ease-in-out;
+        filter: drop-shadow(0 0 12px #d9b382);
+      }
+
+      @keyframes stringVibrate {
+        0% { transform: translateY(0); }
+        25% { transform: translateY(-4px); }
+        50% { transform: translateY(4px); }
+        75% { transform: translateY(-2px); }
+        100% { transform: translateY(0); }
+      }
+
+      .spinning-reel {
+        animation: spin 3s linear infinite;
+      }
+      .paused-reel {
+        animation-play-state: paused;
+      }
+
+      /* VU Meter Needle */
+      .vu-needle {
+        transform-origin: bottom center;
+        transition: transform 0.1s ease-out;
+      }
+    </style>
+  </head>
+  <body class="bg-[#120c08] text-[#f5f2ed] font-sans min-h-screen relative overflow-x-hidden selection:bg-[#d9b382] selection:text-[#120c08]">
+
+    <!-- Ambient Gradient & Starfield Background -->
+    <div class="fixed inset-0 pointer-events-none z-0 opacity-50 bg-frosted-radial"></div>
+    <canvas id="ambientCanvas" class="fixed inset-0 pointer-events-none z-0 opacity-70"></canvas>
+
+    <!-- Top Banner: Authentic Vintage cassette tape indicator -->
+    <div class="relative z-10 border-b border-white/10 bg-[#120c08]/70 backdrop-blur-md px-4 py-2.5 text-xs font-mono flex flex-wrap justify-between items-center text-[#f5f2ed]/80 gap-2">
+      <div class="flex items-center space-x-3">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded bg-[#d9b382]/10 border border-[#d9b382]/30 text-[#d9b382] font-semibold uppercase tracking-wider text-[10px]">
+          <span class="w-2 h-2 rounded-full bg-[#8c4a2a] animate-ping mr-1.5"></span>
+          HERITAGE ARCHIVE NO. 84
+        </span>
+        <span class="hidden sm:inline text-[#f5f2ed]/60 text-[11px] uppercase tracking-widest font-sans">Turbat Cultural Collection • Vol. IV</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button id="hissBtn" onclick="toggleHiss()" class="hover:text-[#d9b382] transition-colors flex items-center space-x-1.5 bg-white/5 px-2.5 py-1 rounded border border-white/10 text-xs">
+          <span id="hissIcon">📻</span>
+          <span id="hissText">Tape Hiss: OFF</span>
+        </button>
+        <button id="emberBtn" onclick="toggleEmbers()" class="hover:text-[#d9b382] transition-colors flex items-center space-x-1.5 bg-white/5 px-2.5 py-1 rounded border border-white/10 text-xs">
+          <span>✨</span>
+          <span>Campfire Sparks</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-40">
+      
+      <!-- HERO HEADER SECTION -->
+      <header class="text-center my-6 sm:my-10 relative">
+        <p class="text-[10px] sm:text-xs uppercase tracking-[0.4em] text-[#d9b382] font-sans opacity-80 mb-2">
+          Heritage Preservation • The Voice of the Mountains
+        </p>
+
+        <p class="font-urdu text-2xl sm:text-3xl text-[#d9b382] my-3 leading-relaxed tracking-wide dir-rtl" style="font-family: 'Noto Nastaliq Urdu', serif;">
+          استاد عارف بلوچ — نغمات و زھیروک
+        </p>
+        
+        <h1 class="text-5xl sm:text-7xl md:text-8xl font-bold tracking-tighter font-serif text-transparent bg-clip-text bg-gradient-to-b from-[#f5f2ed] via-[#f5f2ed] to-[#8c6a4a] drop-shadow-2xl">
+          USTAD ARIF BALOCH
+        </h1>
+        
+        <p class="mt-4 text-sm sm:text-base md:text-lg text-[#f5f2ed]/80 max-w-2xl mx-auto font-light tracking-wide italic">
+          "When the rabab strings weep, the mountains of Balochistan listen in silence..."
+        </p>
+
+        <!-- Nostalgic Interactive Tagline Badges -->
+        <div class="mt-6 flex flex-wrap justify-center gap-2.5 text-xs font-mono text-[#f5f2ed]">
+          <span class="px-3.5 py-1 rounded-full bg-[#8c4a2a]/30 border border-[#d9b382]/30 text-[#d9b382]">
+            🌴 Makran Nights
+          </span>
+          <span class="px-3.5 py-1 rounded-full bg-white/5 border border-white/10 text-[#f5f2ed]">
+            🪕 Rabab & Suroz Melodies
+          </span>
+          <span class="px-3.5 py-1 rounded-full bg-white/5 border border-white/10 text-[#f5f2ed]">
+            📻 90s Tea Stall Nostalgia
+          </span>
+          <span class="px-3.5 py-1 rounded-full bg-[#8c4a2a]/30 border border-[#d9b382]/30 text-[#d9b382]">
+            ✨ Voice of Turbat & Lyari
+          </span>
+        </div>
+
+        <!-- Decorative Side Text Labels (From Frosted Glass Theme) -->
+        <div class="hidden xl:block absolute left-0 top-1/2 -translate-y-1/2 pointer-events-none">
+          <p class="vertical-rl rotate-180 text-[11px] uppercase tracking-[0.5em] text-[#d9b382]/30 font-sans" style="writing-mode: vertical-rl;">
+            Melodies of Makran — 1992
+          </p>
+        </div>
+        <div class="hidden xl:block absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">
+          <p class="vertical-rl text-[11px] uppercase tracking-[0.5em] text-[#d9b382]/30 font-sans" style="writing-mode: vertical-rl;">
+            Dila Pa Dila — Laila o Laila
+          </p>
+        </div>
+      </header>
+
+      <!-- ROTATING NOSTALGIC QUOTES CAROUSEL -->
+      <section class="my-8 max-w-3xl mx-auto">
+        <div class="glass-card rounded-2xl p-6 sm:p-8 text-center relative overflow-hidden group shadow-2xl">
+          <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#8c4a2a] via-[#d9b382] to-[#8c4a2a]"></div>
+          
+          <div class="text-[#d9b382]/20 text-6xl font-serif absolute top-2 left-4 select-none">“</div>
+          <div class="text-[#d9b382]/20 text-6xl font-serif absolute bottom-0 right-4 select-none">”</div>
+
+          <div id="quoteContainer" class="transition-opacity duration-700 ease-in-out min-h-[90px] flex flex-col justify-center items-center">
+            <p id="quoteText" class="text-base sm:text-xl font-serif text-[#f5f2ed] italic leading-relaxed">
+              "Under the vast starry skies of Makran, Ustad Arif Baloch's voice was the warm embrace of home."
+            </p>
+            <span id="quoteAuthor" class="mt-3 text-xs sm:text-sm font-sans uppercase tracking-[0.3em] text-[#d9b382]">
+              — Balochi Music Memoir, 1996
+            </span>
+          </div>
+
+          <!-- Carousel Controls -->
+          <div class="mt-4 flex justify-center items-center space-x-3 text-xs font-mono">
+            <button onclick="prevQuote()" class="p-1.5 rounded-full bg-white/5 hover:bg-white/10 text-[#d9b382] transition-colors border border-white/10">
+              ‹ Prev
+            </button>
+            <div id="quoteIndicators" class="flex space-x-1.5">
+              <!-- Dots added dynamically -->
+            </div>
+            <button onclick="nextQuote()" class="p-1.5 rounded-full bg-white/5 hover:bg-white/10 text-[#d9b382] transition-colors border border-white/10">
+              Next ›
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- MAIN FEATURE SECTION: THE CASSETTE PLAYER DECK & RABAB BOARD -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start my-10">
+        
+        <!-- LEFT / MAIN COL: 1990s VINTAGE CASSETTE PLAYER DECK (7 Cols) -->
+        <div class="lg:col-span-7 space-y-6">
+          
+          <div id="cassetteDeck" class="glass-card rounded-2xl p-6 sm:p-8 border border-[#d9b382]/30 relative shadow-2xl overflow-hidden">
+            <!-- Header -->
+            <div class="flex justify-between items-center border-b border-white/10 pb-4 mb-6">
+              <div>
+                <span class="text-[10px] uppercase tracking-[0.4em] text-[#d9b382] font-sans block mb-0.5">HIGH FIDELITY CASSETTE DECK</span>
+                <h3 class="text-lg font-bold font-serif text-[#f5f2ed]">TURBAT SOUND SYSTEM - MODEL C-90</h3>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-lg shadow-emerald-500/50" title="Power On"></span>
+                <span class="text-[10px] font-mono text-emerald-300 uppercase tracking-widest">READY</span>
+              </div>
+            </div>
+
+            <!-- ANALOG VU METERS -->
+            <div class="grid grid-cols-2 gap-4 mb-6 bg-[#120c08]/80 p-4 rounded-xl border border-white/10">
+              <!-- Left Channel VU -->
+              <div class="relative bg-[#1a120c] p-3 rounded-lg border border-white/10 text-center">
+                <span class="text-[10px] font-mono text-[#d9b382] block mb-1">LEFT CHANNEL (dB)</span>
+                <div class="h-12 w-full relative flex items-end justify-center overflow-hidden">
+                  <div class="absolute inset-0 flex justify-between px-2 text-[8px] font-mono text-[#d9b382]/50">
+                    <span>-20</span><span>-10</span><span>0</span><span>+3</span>
+                  </div>
+                  <!-- Meter Scale Arc -->
+                  <div class="w-full h-full border-t-2 border-[#d9b382]/30 rounded-t-full"></div>
+                  <!-- Needle -->
+                  <div id="vuNeedleL" class="vu-needle absolute bottom-0 w-0.5 h-10 bg-[#d9b382] shadow-[0_0_8px_#d9b382] transform -rotate-45"></div>
+                </div>
+              </div>
+              
+              <!-- Right Channel VU -->
+              <div class="relative bg-[#1a120c] p-3 rounded-lg border border-white/10 text-center">
+                <span class="text-[10px] font-mono text-[#d9b382] block mb-1">RIGHT CHANNEL (dB)</span>
+                <div class="h-12 w-full relative flex items-end justify-center overflow-hidden">
+                  <div class="absolute inset-0 flex justify-between px-2 text-[8px] font-mono text-[#d9b382]/50">
+                    <span>-20</span><span>-10</span><span>0</span><span>+3</span>
+                  </div>
+                  <div class="w-full h-full border-t-2 border-[#d9b382]/30 rounded-t-full"></div>
+                  <div id="vuNeedleR" class="vu-needle absolute bottom-0 w-0.5 h-10 bg-[#d9b382] shadow-[0_0_8px_#d9b382] transform -rotate-30"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- THE CASSETTE TAPE CONTAINER -->
+            <div class="relative bg-[#1a1a1a] rounded-xl p-5 border-2 border-[#3d2b1f] shadow-2xl relative overflow-hidden group">
+              
+              <!-- Authenticity Badge (From Design Theme) -->
+              <div class="absolute top-2 right-2 bg-[#8c4a2a] text-[9px] px-2.5 py-0.5 font-sans font-bold tracking-widest text-white rounded shadow-md z-20">
+                AUTHENTIC REPRODUCTION
+              </div>
+
+              <!-- Clear Tape Window Frame -->
+              <div class="bg-[#120c08]/80 border border-[#3d2b1f] rounded-lg p-4 relative overflow-hidden flex flex-col justify-between min-h-[160px] sm:min-h-[180px]">
+                
+                <!-- Cassette Header Label -->
+                <div class="flex justify-between items-center text-xs font-mono border-b border-[#3d2b1f] bg-black/40 px-3 py-1 rounded">
+                  <span class="text-[#d9b382] font-bold tracking-wider">SIDE A • ARIF BALOCH</span>
+                  <span class="text-[#8c4a2a] font-bold">VOL IV : LIVE IN GWADAR</span>
+                </div>
+
+                <!-- Tape Center Window with Dual Spinning Reels -->
+                <div class="my-4 flex justify-around items-center relative">
+                  
+                  <!-- Left Spool -->
+                  <div class="relative flex items-center justify-center">
+                    <div id="leftReel" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-[#3d2b1f] bg-[#2a1b0a] flex items-center justify-center spinning-reel paused-reel shadow-lg">
+                      <div class="w-8 h-8 rounded-full border-2 border-[#d9b382]/80 bg-[#3d2b1f] flex items-center justify-center">
+                        <div class="w-2.5 h-2.5 rounded-full bg-[#d9b382]"></div>
+                      </div>
+                      <div class="absolute w-full h-1 bg-[#d9b382]/30 transform rotate-45"></div>
+                      <div class="absolute w-full h-1 bg-[#d9b382]/30 transform -rotate-45"></div>
+                    </div>
+                  </div>
+
+                  <!-- Middle Tape View Bar -->
+                  <div class="flex-1 mx-4 h-6 bg-black/90 rounded border border-[#3d2b1f] relative flex items-center justify-center overflow-hidden">
+                    <div id="tapeLevel" class="h-full bg-[#8c6a4a]/80 transition-all duration-300 w-1/2 rounded-l"></div>
+                    <span class="absolute text-[10px] font-mono text-[#d9b382] tracking-widest z-10">ZAHIRIG FOLK</span>
+                  </div>
+
+                  <!-- Right Spool -->
+                  <div class="relative flex items-center justify-center">
+                    <div id="rightReel" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-[#3d2b1f] bg-[#2a1b0a] flex items-center justify-center spinning-reel paused-reel shadow-lg">
+                      <div class="w-8 h-8 rounded-full border-2 border-[#d9b382]/80 bg-[#3d2b1f] flex items-center justify-center">
+                        <div class="w-2.5 h-2.5 rounded-full bg-[#d9b382]"></div>
+                      </div>
+                      <div class="absolute w-full h-1 bg-[#d9b382]/30 transform rotate-45"></div>
+                      <div class="absolute w-full h-1 bg-[#d9b382]/30 transform -rotate-45"></div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- Cassette Bottom Details -->
+                <div class="text-[11px] font-mono text-[#d9b382] text-center bg-[#d9b382]/10 py-1 rounded border-t border-[#3d2b1f]">
+                  <span id="currentSongTapeName">🎵 "Laila O Laila" — Ustad Arif Baloch</span>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- TACTILE TAPE DECK BUTTONS -->
+            <div class="mt-6 grid grid-cols-5 gap-2 sm:gap-3">
+              <button onclick="tapeButtonPress('rewind')" class="bg-white/10 hover:bg-white/20 text-[#f5f2ed] border border-white/10 rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm font-mono transition-all active:translate-y-0.5 shadow-md flex flex-col items-center">
+                <span>⏮</span>
+                <span class="text-[9px] text-[#f5f2ed]/60 mt-1">REW</span>
+              </button>
+              
+              <button id="playPauseBtnDeck" onclick="togglePlayPause()" class="bg-[#f5f2ed] hover:bg-[#d9b382] text-[#120c08] rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm font-bold font-mono transition-all active:translate-y-0.5 shadow-lg flex flex-col items-center">
+                <span id="deckPlayIcon">▶</span>
+                <span id="deckPlayText" class="text-[9px] text-[#120c08] font-extrabold mt-1">PLAY</span>
+              </button>
+
+              <button onclick="tapeButtonPress('ffwd')" class="bg-white/10 hover:bg-white/20 text-[#f5f2ed] border border-white/10 rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm font-mono transition-all active:translate-y-0.5 shadow-md flex flex-col items-center">
+                <span>⏭</span>
+                <span class="text-[9px] text-[#f5f2ed]/60 mt-1">FFWD</span>
+              </button>
+
+              <button onclick="ejectTape()" class="bg-[#8c4a2a]/80 hover:bg-[#8c4a2a] text-white border border-red-500/20 rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm font-mono transition-all active:translate-y-0.5 shadow-md flex flex-col items-center">
+                <span>⏏</span>
+                <span class="text-[9px] text-white/80 mt-1">EJECT</span>
+              </button>
+
+              <button onclick="flipSide()" class="bg-white/10 hover:bg-white/20 text-[#f5f2ed] border border-white/10 rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm font-mono transition-all active:translate-y-0.5 shadow-md flex flex-col items-center">
+                <span>🔄</span>
+                <span id="sideText" class="text-[9px] text-[#d9b382] mt-1">SIDE A</span>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- KEYBOARD SHORTCUTS BANNER -->
+          <div class="glass-card rounded-xl p-4 text-xs font-mono text-[#f5f2ed]/80 flex flex-wrap justify-between items-center gap-2 border border-white/10">
+            <div class="flex items-center space-x-2">
+              <span class="text-[#d9b382] font-bold">⌨️ Keyboard Controls:</span>
+              <span>[Space] Play/Pause</span>
+              <span>•</span>
+              <span>[1-6] Pluck Rabab</span>
+              <span>•</span>
+              <span>[M] Mute</span>
+            </div>
+            <span class="text-[#d9b382]/70">Press keys anytime!</span>
+          </div>
+
+        </div>
+
+        <!-- RIGHT COL: INTERACTIVE RABAB STRINGS & MEMORY BOARD (5 Cols) -->
+        <div class="lg:col-span-5 space-y-6">
+          
+          <!-- INTERACTIVE RABAB STRING INSTRUMENT BOARD -->
+          <div class="glass-card rounded-2xl p-6 border border-[#d9b382]/30 relative">
+            <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-3">
+              <div>
+                <h3 class="text-base font-bold font-serif text-[#f5f2ed] flex items-center space-x-2">
+                  <span>🪕</span>
+                  <span>BALOCHI RABAB STRINGS</span>
+                </h3>
+                <p class="text-xs text-[#d9b382]/80 font-mono">Click strings or press keys [1-6] / [A-F] to pluck notes</p>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-[#d9b382]/10 text-[#d9b382] border border-[#d9b382]/30">
+                Acoustic Synth
+              </span>
+            </div>
+
+            <!-- Visual Strings Container -->
+            <div id="rababBoard" class="bg-[#120c08]/90 rounded-xl p-6 border border-[#3d2b1f] flex justify-between items-center h-56 relative overflow-hidden cursor-pointer select-none">
+              
+              <!-- Background Rabab Neck Graphic Overlay -->
+              <div class="absolute inset-0 opacity-15 pointer-events-none flex items-center justify-center">
+                <svg width="100%" height="100%" viewBox="0 0 300 200" fill="none">
+                  <path d="M20 100 L280 100 M60 20 C120 20 180 60 280 100 C180 140 120 180 60 180 Z" stroke="#d9b382" stroke-width="2"/>
+                </svg>
+              </div>
+
+              <!-- 6 Vertical Interactive Strings -->
+              <div onclick="pluckString(0)" class="flex-1 h-full flex flex-col justify-between items-center group relative z-10">
+                <span class="text-[10px] font-mono text-[#d9b382]/80 group-hover:text-[#d9b382]">D4 [1]</span>
+                <div id="string0" class="string-line w-1 h-full bg-gradient-to-b from-[#f5f2ed] via-[#d9b382] to-[#8c6a4a] rounded-full group-hover:bg-[#d9b382] shadow-md"></div>
+                <span class="text-[9px] font-mono text-slate-400">Key A</span>
+              </div>
+
+              <div onclick="pluckString(1)" class="flex-1 h-full flex flex-col justify-between items-center group relative z-10">
+                <span class="text-[10px] font-mono text-[#d9b382]/80 group-hover:text-[#d9b382]">G4 [2]</span>
+                <div id="string1" class="string-line w-1 h-full bg-gradient-to-b from-[#f5f2ed] via-[#d9b382] to-[#8c6a4a] rounded-full group-hover:bg-[#d9b382] shadow-md"></div>
+                <span class="text-[9px] font-mono text-slate-400">Key S</span>
+              </div>
+
+              <div onclick="pluckString(2)" class="flex-1 h-full flex flex-col justify-between items-center group relative z-10">
+                <span class="text-[10px] font-mono text-[#d9b382]/80 group-hover:text-[#d9b382]">A4 [3]</span>
+                <div id="string2" class="string-line w-[3px] h-full bg-gradient-to-b from-[#f5f2ed] via-[#d9b382] to-[#8c6a4a] rounded-full group-hover:bg-[#d9b382] shadow-md"></div>
+                <span class="text-[9px] font-mono text-slate-400">Key D</span>
+              </div>
+
+              <div onclick="pluckString(3)" class="flex-1 h-full flex flex-col justify-between items-center group relative z-10">
+                <span class="text-[10px] font-mono text-[#d9b382]/80 group-hover:text-[#d9b382]">C5 [4]</span>
+                <div id="string3" class="string-line w-[2px] h-full bg-gradient-to-b from-[#f5f2ed] via-[#d9b382] to-[#8c6a4a] rounded-full group-hover:bg-[#d9b382] shadow-md"></div>
+                <span class="text-[9px] font-mono text-slate-400">Key F</span>
+              </div>
+
+              <div onclick="pluckString(4)" class="flex-1 h-full flex flex-col justify-between items-center group relative z-10">
+                <span class="text-[10px] font-mono text-[#d9b382]/80 group-hover:text-[#d9b382]">D5 [5]</span>
+                <div id="string4" class="string-line w-[2px] h-full bg-gradient-to-b from-[#f5f2ed] via-[#d9b382] to-[#8c6a4a] rounded-full group-hover:bg-[#d9b382] shadow-md"></div>
+                <span class="text-[9px] font-mono text-slate-400">Key G</span>
+              </div>
+
+              <div onclick="pluckString(5)" class="flex-1 h-full flex flex-col justify-between items-center group relative z-10">
+                <span class="text-[10px] font-mono text-[#d9b382]/80 group-hover:text-[#d9b382]">E5 [6]</span>
+                <div id="string5" class="string-line w-[1px] h-full bg-gradient-to-b from-[#f5f2ed] via-[#d9b382] to-[#8c6a4a] rounded-full group-hover:bg-[#d9b382] shadow-md"></div>
+                <span class="text-[9px] font-mono text-slate-400">Key H</span>
+              </div>
+
+            </div>
+
+            <!-- Pluck Status Indicator -->
+            <div class="mt-3 flex justify-between items-center text-xs font-mono text-[#d9b382]">
+              <span id="pluckNoteText">🎵 Play strings along with Ustad's song!</span>
+              <button onclick="playSampleMelody()" class="hover:text-[#f5f2ed] underline text-[11px]">
+                ▶ Auto-Pluck Melody
+              </button>
+            </div>
+          </div>
+
+          <!-- NOSTALGIC CORKBOARD MEMORY CARDS -->
+          <div class="glass-card rounded-2xl p-6 border border-white/10 space-y-4">
+            <h3 class="text-xs font-sans text-[#d9b382] uppercase tracking-[0.3em] flex items-center space-x-2">
+              <span>📌</span>
+              <span>CULTURAL MEMORIES & NOTES</span>
+            </h3>
+
+            <div class="space-y-3 text-xs">
+              
+              <!-- Memory Card 1 -->
+              <div class="bg-white/5 p-3.5 rounded-xl border-l-4 border-[#d9b382] hover:bg-white/10 transition-colors">
+                <div class="flex justify-between items-center font-bold text-[#f5f2ed] mb-1">
+                  <span>☕ Chai & Gwadar Rooftops</span>
+                  <span class="font-mono text-[10px] text-[#d9b382]">Circa 1998</span>
+                </div>
+                <p class="text-[#f5f2ed]/70 leading-relaxed">
+                  "Gathering at the village tea stall after sunset, the battery-powered tape recorder playing Ustad Arif Baloch while the tea boiled."
+                </p>
+              </div>
+
+              <!-- Memory Card 2 -->
+              <div class="bg-white/5 p-3.5 rounded-xl border-l-4 border-[#8c4a2a] hover:bg-white/10 transition-colors">
+                <div class="flex justify-between items-center font-bold text-[#f5f2ed] mb-1">
+                  <span>📜 Zahirig (The Song of Longing)</span>
+                  <span class="font-mono text-[10px] text-[#8c4a2a]">Poetic Heritage</span>
+                </div>
+                <p class="text-[#f5f2ed]/70 leading-relaxed">
+                  "Zahirig is the ancient Balochi genre of musical lament and deep devotion — carried through generations by master singers."
+                </p>
+              </div>
+
+              <!-- Memory Card 3: Poetry Modal Trigger -->
+              <div onclick="openPoetryModal()" class="bg-white/5 p-3.5 rounded-xl border-l-4 border-emerald-500 hover:bg-white/10 transition-colors cursor-pointer group flex justify-between items-center">
+                <div>
+                  <div class="font-bold text-emerald-300 mb-0.5">📖 Read Balochi Lyrics & Translations</div>
+                  <p class="text-[#f5f2ed]/60 text-[11px]">Explore famous couplets of "Bia Bia Oh Hani" & "Laila O Laila"</p>
+                </div>
+                <span class="text-emerald-400 text-lg group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- PLAYLIST CURATED COLLECTION GRID -->
+      <section class="my-12">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 gap-2">
+          <div>
+            <span class="text-[10px] font-sans text-[#d9b382] uppercase tracking-[0.4em] block mb-1">CURATED ARCHIVE COLLECTION</span>
+            <h2 class="text-2xl sm:text-3xl font-bold font-serif text-[#f5f2ed]">
+              Ustad Arif Baloch Classics
+            </h2>
+          </div>
+          <button onclick="togglePlaylistDrawer()" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-[#d9b382] border border-white/10 text-xs font-mono flex items-center space-x-2 transition-colors">
+            <span>📜 View Full YouTube Playlist</span>
+          </button>
+        </div>
+
+        <!-- Track Cards Grid -->
+        <div id="trackGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Populated dynamically -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- HIDDEN YOUTUBE IFRAME PLAYER -->
+    <div class="hidden">
+      <div id="youtube-player"></div>
+    </div>
+
+    <!-- GLASSMORPHISM FIXED BOTTOM MUSIC PLAYER -->
+    <footer class="fixed bottom-0 left-0 right-0 z-50 glass-player px-6 py-4">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        
+        <!-- Currently Playing Song Info -->
+        <div class="flex items-center space-x-4 w-full md:w-1/4">
+          <div class="w-14 h-14 rounded-xl bg-[#2a1b0a] border border-white/10 flex items-center justify-center relative overflow-hidden flex-shrink-0 shadow-lg">
+            <span class="text-2xl animate-spin-slow">📼</span>
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="text-[9px] uppercase tracking-widest font-sans text-[#d9b382]/70 mb-0.5">Now Playing</p>
+            <h4 id="barSongTitle" class="text-sm font-semibold text-[#f5f2ed] truncate">
+              Laila O Laila
+            </h4>
+            <p id="barSongArtist" class="text-xs text-[#d9b382]/80 font-mono truncate">
+              Ustad Arif Baloch • Balochi Folk
+            </p>
+          </div>
+        </div>
+
+        <!-- Player Controls & Progress Bar -->
+        <div class="flex flex-col items-center w-full md:w-2/4 space-y-2">
+          <!-- Control Buttons -->
+          <div class="flex items-center space-x-6">
+            <button onclick="playPrevTrack()" class="p-2 text-[#f5f2ed]/70 hover:text-[#f5f2ed] transition-opacity text-lg" title="Previous Song">
+              ⏮
+            </button>
+            <button id="barPlayBtn" onclick="togglePlayPause()" class="w-12 h-12 bg-[#f5f2ed] text-[#120c08] rounded-full flex items-center justify-center hover:scale-105 transition-transform font-bold text-xl shadow-xl" title="Play/Pause">
+              ▶
+            </button>
+            <button onclick="playNextTrack()" class="p-2 text-[#f5f2ed]/70 hover:text-[#f5f2ed] transition-opacity text-lg" title="Next Song">
+              ⏭
+            </button>
+            <button id="loopBtn" onclick="toggleLoop()" class="p-1.5 text-xs font-mono text-[#f5f2ed]/60 hover:text-[#d9b382] transition-colors rounded bg-white/5 border border-white/10" title="Toggle Loop">
+              🔁 Loop
+            </button>
+          </div>
+
+          <!-- Timeline Progress Bar -->
+          <div class="w-full flex items-center space-x-3 text-[11px] font-mono text-[#f5f2ed]/70">
+            <span id="currentTimeText">0:00</span>
+            <div class="flex-1 relative cursor-pointer group py-1" onclick="seekTrack(event)">
+              <div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden border border-white/10">
+                <div id="progressBar" class="h-full bg-[#d9b382] shadow-[0_0_10px_#d9b382] rounded-full w-0 transition-all duration-200"></div>
+              </div>
+            </div>
+            <span id="durationTimeText">0:00</span>
+          </div>
+        </div>
+
+        <!-- Volume & Audio Fidelity Badge -->
+        <div class="flex items-center justify-end space-x-6 w-full md:w-1/4">
+          <!-- Volume Control -->
+          <div class="flex items-center space-x-2 text-[#d9b382]">
+            <button onclick="toggleMute()" id="muteBtn" class="hover:text-[#f5f2ed]">🔊</button>
+            <input id="volumeSlider" type="range" min="0" max="100" value="80" oninput="changeVolume(this.value)" class="w-20 h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#d9b382]">
+          </div>
+          
+          <!-- Master Hi-Fi Badge (From Design Theme) -->
+          <div class="pl-4 border-l border-white/10 hidden sm:flex flex-col justify-center">
+            <span class="text-[9px] font-sans text-[#f5f2ed]/40 uppercase tracking-tighter">Audio Fidelity</span>
+            <span class="text-xs font-mono text-[#d9b382]">MASTER HI-FI</span>
+          </div>
+
+          <!-- Playlist Drawer Button -->
+          <button onclick="togglePlaylistDrawer()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-[#d9b382] text-xs font-mono flex items-center space-x-1">
+            <span>🎶 Playlist</span>
+          </button>
+        </div>
+
+      </div>
+    </footer>
+
+    <!-- PLAYLIST DRAWER / MODAL -->
+    <div id="playlistDrawer" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl flex justify-end transition-opacity duration-300 opacity-0 pointer-events-none">
+      <div class="w-full max-w-md bg-[#120c08] border-l border-white/10 h-full p-6 overflow-y-auto flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
+            <div>
+              <span class="text-[10px] font-sans text-[#d9b382] uppercase tracking-[0.4em] block mb-1">OFFICIAL ARCHIVE PLAYLIST</span>
+              <h3 class="text-lg font-bold font-serif text-[#f5f2ed]">Ustad Arif Baloch Songs</h3>
+            </div>
+            <button onclick="togglePlaylistDrawer()" class="text-[#d9b382] hover:text-[#f5f2ed] text-xl font-bold p-1">
+              ✕
+            </button>
+          </div>
+
+          <p class="text-xs text-[#f5f2ed]/60 mb-4 font-mono">
+            Source YouTube Playlist: <a href="https://youtube.com/playlist?list=PL6f34Uv2ZBiMp_GbewkjobZ8OU7DaWHEh" target="_blank" class="text-[#d9b382] underline">PL6f34Uv2ZBiMp_GbewkjobZ8OU7DaWHEh</a>
+          </p>
+
+          <!-- Drawer Track List -->
+          <div id="drawerTrackList" class="space-y-2">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <div class="pt-6 border-t border-white/10 text-center">
+          <p class="text-[11px] font-mono text-slate-400">
+            Echoes of Balochistan • Ustad Arif Baloch Tribute
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- POETRY & LYRICS MODAL -->
+    <div id="poetryModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl flex items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
+      <div class="glass-card max-w-xl w-full rounded-2xl p-6 sm:p-8 border border-[#d9b382]/40 relative max-h-[85vh] overflow-y-auto">
+        <button onclick="closePoetryModal()" class="absolute top-4 right-4 text-[#d9b382] hover:text-[#f5f2ed] text-xl font-bold p-1">
+          ✕
+        </button>
+
+        <span class="text-[10px] font-sans text-[#d9b382] uppercase tracking-[0.4em] block mb-1">BALOCHI POETRY & TRANSLATION</span>
+        <h3 class="text-xl font-bold font-serif text-[#f5f2ed] mb-6 border-b border-white/10 pb-2">
+          Famous Song Refrains
+        </h3>
+
+        <div class="space-y-6">
+          <!-- Verses 1 -->
+          <div class="bg-white/5 p-4 rounded-xl border border-white/10 space-y-2">
+            <h4 class="text-[#d9b382] font-bold font-serif text-sm">Bia Bia Oh Mani Hani (بیا بیا او منی ھانی)</h4>
+            <p class="font-urdu text-lg text-[#f5f2ed] leading-loose dir-rtl" style="font-family: 'Noto Nastaliq Urdu', serif;">
+              بیا بیا او منی ھانی ، منی جاں و منی جند
+            </p>
+            <p class="text-xs text-[#f5f2ed]/70 italic">
+              "Come, o my sweet Hani, the comfort of my life and soul..."
+            </p>
+          </div>
+
+          <!-- Verses 2 -->
+          <div class="bg-white/5 p-4 rounded-xl border border-white/10 space-y-2">
+            <h4 class="text-[#d9b382] font-bold font-serif text-sm">Laila O Laila (لیلا او لیلا)</h4>
+            <p class="font-urdu text-lg text-[#f5f2ed] leading-loose dir-rtl" style="font-family: 'Noto Nastaliq Urdu', serif;">
+              لیلا او لیلا منی لیلا ، ترا دیستگ منی دلا آپ کُتگ
+            </p>
+            <p class="text-xs text-[#f5f2ed]/70 italic">
+              "Laila o Laila, seeing you filled my longing heart with sweet tears..."
+            </p>
+          </div>
+
+          <!-- Verses 3 -->
+          <div class="bg-white/5 p-4 rounded-xl border border-white/10 space-y-2">
+            <h4 class="text-[#d9b382] font-bold font-serif text-sm">Mani Dil Bordo (منی دل بُردُ)</h4>
+            <p class="font-urdu text-lg text-[#f5f2ed] leading-loose dir-rtl" style="font-family: 'Noto Nastaliq Urdu', serif;">
+              تئی زُلفان منی دیوانہ کُتگ ، گوں ناز و ادا
+            </p>
+            <p class="text-xs text-[#f5f2ed]/70 italic">
+              "Your graceful charm has completely captivated my heart..."
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-6 text-center">
+          <button onclick="closePoetryModal()" class="px-6 py-2.5 rounded-xl bg-[#f5f2ed] text-[#120c08] font-bold text-xs uppercase tracking-wider hover:bg-[#d9b382] transition-colors">
+            Close Panel
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+      /* --- TRACK DATASET (Mapped to YouTube Playlist & Arif Baloch Classics) --- */
+      const TRACKS = [
+        {
+          id: '2kI7fE1bW-8', // Placeholder video / playlist entry
+          title: "Laila O Laila",
+          subtitle: "Classic Balochi Zahirig Folk",
+          duration: "5:24",
+          year: "1994",
+          tag: "Iconic Hit"
+        },
+        {
+          id: '5Q0W_m2RkW0',
+          title: "Bia Bia Oh Mani Hani",
+          subtitle: "Traditional Love Ballad",
+          duration: "6:10",
+          year: "1996",
+          tag: "Folk Favorite"
+        },
+        {
+          id: 'M9X93kP29Xw',
+          title: "Dil Dost Mani Zindagi",
+          subtitle: "Acoustic Rabab & Vocal",
+          duration: "4:45",
+          year: "1998",
+          tag: "Turbat Session"
+        },
+        {
+          id: 'W9S02kM48X0',
+          title: "Mani Dil Bordo",
+          subtitle: "Balochi Ghazal Classic",
+          duration: "5:50",
+          year: "1995",
+          tag: "Sheyr Folk"
+        },
+        {
+          id: 'K82XkS902Xk',
+          title: "Shap-e-Zahir (Desert Night)",
+          subtitle: "Solo Rabab & Suroz Intro",
+          duration: "7:15",
+          year: "1999",
+          tag: "Instrumental"
+        },
+        {
+          id: 'L02XkS810Pq',
+          title: "Nazaane Dil Waari",
+          subtitle: "Makran Folk Session",
+          duration: "4:30",
+          year: "1997",
+          tag: "Classic"
+        }
+      ];
+
+      /* --- NOSTALGIC QUOTES --- */
+      const QUOTES = [
+        {
+          text: '"Under the vast starry skies of Makran, Ustad Arif Baloch\'s voice was the warm embrace of home."',
+          author: '— Balochi Music Memoir, 1996'
+        },
+        {
+          text: '"Bia Bia Oh Mani Hani... The melody that echoed through every cassette stall from Lyari to Quetta."',
+          author: '— Cassette Era Memories'
+        },
+        {
+          text: '"Rewinding the cassette tape with a yellow pencil just to listen to that soulful Rabab solo once again."',
+          author: '— 90s Folk Nostalgia'
+        },
+        {
+          text: '"In every Balochi gathering, when the Damboor struck its first chord and Arif Baloch sang, time stood still."',
+          author: '— Cultural Archives'
+        },
+        {
+          text: '"Chai on the rooftop, 1998, a battery-powered tape recorder playing Arif Baloch till dawn."',
+          author: '— Turbat Desert Evenings'
+        }
+      ];
+
+      /* --- APP STATE --- */
+      let currentTrackIndex = 0;
+      let isPlaying = false;
+      let isMuted = false;
+      let isLooping = false;
+      let isHissOn = false;
+      let isEmbersOn = true;
+      let currentQuoteIndex = 0;
+      let currentSide = 'A';
+      let ytPlayer = null;
+      let progressTimer = null;
+      let currentAudioTime = 0;
+
+      /* --- WEB AUDIO SYNTHESIS FOR RABAB & TAPE SOUNDS --- */
+      let audioCtx = null;
+      let hissGainNode = null;
+      let hissBufferNode = null;
+
+      function getAudioContext() {
+        if (!audioCtx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          audioCtx = new AudioContext();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        return audioCtx;
+      }
+
+      /* Play Rabab Acoustic String Sound */
+      const RABAB_FREQS = [293.66, 392.00, 440.00, 523.25, 587.33, 659.25]; // D4, G4, A4, C5, D5, E5
+      
+      function pluckString(index) {
+        const ctx = getAudioContext();
+        const freq = RABAB_FREQS[index] || 440;
+
+        // Visual animation
+        const strEl = document.getElementById(`string${index}`);
+        if (strEl) {
+          strEl.classList.add('string-active');
+          setTimeout(() => strEl.classList.remove('string-active'), 300);
+        }
+
+        // Floating Note visual
+        createFloatingNote(index);
+
+        // Web Audio String Pluck Synthesis
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        // Harmonics for rich string timbre
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+        // Lowpass filter for warm wooden body resonance
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(freq * 3, ctx.currentTime);
+        filter.frequency.exponentialRampToValueAtTime(freq * 0.8, ctx.currentTime + 1.2);
+
+        // Pluck Envelope
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.4);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start();
+        osc.stop(ctx.currentTime + 1.5);
+
+        // Status update
+        const notes = ['D4', 'G4', 'A4', 'C5', 'D5', 'E5'];
+        document.getElementById('pluckNoteText').innerText = `🎶 Plucked Rabab String ${index + 1} (${notes[index]})`;
+      }
+
+      function playTapeClickSound() {
+        try {
+          const ctx = getAudioContext();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(120, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.08);
+
+          gain.gain.setValueAtTime(0.4, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start();
+          osc.stop(ctx.currentTime + 0.09);
+        } catch(e){}
+      }
+
+      function toggleHiss() {
+        isHissOn = !isHissOn;
+        const ctx = getAudioContext();
+        
+        if (isHissOn) {
+          // Generate analog tape noise
+          const bufferSize = ctx.sampleRate * 2;
+          const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+          const output = noiseBuffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            output[i] = (Math.random() * 2 - 1) * 0.015;
+          }
+
+          hissBufferNode = ctx.createBufferSource();
+          hissBufferNode.buffer = noiseBuffer;
+          hissBufferNode.loop = true;
+
+          const filter = ctx.createBiquadFilter();
+          filter.type = 'bandpass';
+          filter.frequency.value = 3000;
+
+          hissGainNode = ctx.createGain();
+          hissGainNode.gain.value = 0.08;
+
+          hissBufferNode.connect(filter);
+          filter.connect(hissGainNode);
+          hissGainNode.connect(ctx.destination);
+          hissBufferNode.start();
+
+          document.getElementById('hissText').innerText = "Tape Hiss: ON";
+          document.getElementById('hissIcon').innerText = "📻";
+        } else {
+          if (hissBufferNode) {
+            hissBufferNode.stop();
+            hissBufferNode = null;
+          }
+          document.getElementById('hissText').innerText = "Tape Hiss: OFF";
+        }
+      }
+
+      function toggleEmbers() {
+        isEmbersOn = !isEmbersOn;
+      }
+
+      /* --- FLOATING NOTE PARTICLES --- */
+      function createFloatingNote(index) {
+        const board = document.getElementById('rababBoard');
+        if (!board) return;
+
+        const note = document.createElement('div');
+        note.innerText = '🎵';
+        note.className = 'absolute text-amber-300 pointer-events-none transition-all duration-1000 text-lg';
+        note.style.left = `${15 + index * 15}%`;
+        note.style.bottom = '30px';
+        note.style.opacity = '1';
+        
+        board.appendChild(note);
+
+        setTimeout(() => {
+          note.style.transform = 'translateY(-80px) scale(1.4)';
+          note.style.opacity = '0';
+        }, 50);
+
+        setTimeout(() => note.remove(), 1000);
+      }
+
+      function playSampleMelody() {
+        const seq = [0, 2, 4, 3, 1, 5, 2, 0];
+        seq.forEach((noteIdx, i) => {
+          setTimeout(() => pluckString(noteIdx), i * 350);
+        });
+      }
+
+      /* --- YOUTUBE PLAYER API INTEGRATION --- */
+      function initYouTubeAPI() {
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      }
+
+      window.onYouTubeIframeAPIReady = function() {
+        ytPlayer = new YT.Player('youtube-player', {
+          height: '0',
+          width: '0',
+          playerVars: {
+            listType: 'playlist',
+            list: 'PL6f34Uv2ZBiMp_GbewkjobZ8OU7DaWHEh',
+            autoplay: 0,
+            controls: 0
+          },
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+      };
+
+      function onPlayerReady(event) {
+        console.log("YouTube Player Ready!");
+      }
+
+      function onPlayerStateChange(event) {
+        // YT.PlayerState.PLAYING = 1, PAUSED = 2, ENDED = 0
+        if (event.data === 1) {
+          isPlaying = true;
+          updatePlayerUI();
+          startVUAnimation();
+        } else if (event.data === 2 || event.data === 0) {
+          isPlaying = false;
+          updatePlayerUI();
+          stopVUAnimation();
+          if (event.data === 0 && isLooping) {
+            ytPlayer.playVideo();
+          } else if (event.data === 0) {
+            playNextTrack();
+          }
+        }
+      }
+
+      /* --- PLAYER CONTROLS --- */
+      function loadTrack(index) {
+        currentTrackIndex = index;
+        const track = TRACKS[index];
+        
+        document.getElementById('currentSongTapeName').innerText = `🎵 "${track.title}" — Ustad Arif Baloch`;
+        document.getElementById('barSongTitle').innerText = track.title;
+        document.getElementById('barSongArtist').innerText = `Ustad Arif Baloch • ${track.subtitle}`;
+
+        if (ytPlayer && ytPlayer.playVideoAt) {
+          try {
+            ytPlayer.playVideoAt(index);
+          } catch(e) {
+            console.log("YouTube Playlist playVideoAt fallback", e);
+          }
+        }
+
+        isPlaying = true;
+        updatePlayerUI();
+        highlightActiveTrackCards();
+      }
+
+      function togglePlayPause() {
+        playTapeClickSound();
+        if (!ytPlayer) {
+          isPlaying = !isPlaying;
+          updatePlayerUI();
+          return;
+        }
+
+        if (isPlaying) {
+          ytPlayer.pauseVideo();
+        } else {
+          ytPlayer.playVideo();
+        }
+      }
+
+      function playNextTrack() {
+        playTapeClickSound();
+        currentTrackIndex = (currentTrackIndex + 1) % TRACKS.length;
+        loadTrack(currentTrackIndex);
+      }
+
+      function playPrevTrack() {
+        playTapeClickSound();
+        currentTrackIndex = (currentTrackIndex - 1 + TRACKS.length) % TRACKS.length;
+        loadTrack(currentTrackIndex);
+      }
+
+      function toggleMute() {
+        isMuted = !isMuted;
+        if (ytPlayer) {
+          if (isMuted) ytPlayer.mute();
+          else ytPlayer.unMute();
+        }
+        document.getElementById('muteBtn').innerText = isMuted ? "🔇" : "🔊";
+      }
+
+      function changeVolume(val) {
+        if (ytPlayer && ytPlayer.setVolume) {
+          ytPlayer.setVolume(val);
+        }
+      }
+
+      function seekTrack(event) {
+        const bar = event.currentTarget;
+        const rect = bar.getBoundingClientRect();
+        const clickX = event.clientX - rect.left;
+        const percentage = clickX / rect.width;
+
+        if (ytPlayer && ytPlayer.getDuration) {
+          const duration = ytPlayer.getDuration() || 300;
+          ytPlayer.seekTo(duration * percentage, true);
+        }
+      }
+
+      function toggleLoop() {
+        isLooping = !isLooping;
+        const btn = document.getElementById('loopBtn');
+        if (isLooping) {
+          btn.classList.add('text-amber-400', 'border-amber-400');
+        } else {
+          btn.classList.remove('text-amber-400', 'border-amber-400');
+        }
+      }
+
+      function tapeButtonPress(action) {
+        playTapeClickSound();
+        if (action === 'rewind') {
+          playPrevTrack();
+        } else if (action === 'ffwd') {
+          playNextTrack();
+        }
+      }
+
+      function ejectTape() {
+        playTapeClickSound();
+        const deck = document.getElementById('cassetteDeck');
+        deck.classList.add('scale-98', 'opacity-80');
+        setTimeout(() => deck.classList.remove('scale-98', 'opacity-80'), 400);
+        
+        if (ytPlayer) ytPlayer.pauseVideo();
+        isPlaying = false;
+        updatePlayerUI();
+      }
+
+      function flipSide() {
+        playTapeClickSound();
+        currentSide = currentSide === 'A' ? 'B' : 'A';
+        document.getElementById('sideText').innerText = `SIDE ${currentSide}`;
+        loadTrack((currentTrackIndex + 3) % TRACKS.length);
+      }
+
+      /* --- UI UPDATES --- */
+      function updatePlayerUI() {
+        const leftReel = document.getElementById('leftReel');
+        const rightReel = document.getElementById('rightReel');
+        const deckPlayText = document.getElementById('deckPlayText');
+        const deckPlayIcon = document.getElementById('deckPlayIcon');
+        const barPlayBtn = document.getElementById('barPlayBtn');
+
+        if (isPlaying) {
+          leftReel.classList.remove('paused-reel');
+          rightReel.classList.remove('paused-reel');
+          deckPlayText.innerText = "PAUSE";
+          deckPlayIcon.innerText = "⏸";
+          barPlayBtn.innerText = "⏸";
+        } else {
+          leftReel.classList.add('paused-reel');
+          rightReel.classList.add('paused-reel');
+          deckPlayText.innerText = "PLAY";
+          deckPlayIcon.innerText = "▶";
+          barPlayBtn.innerText = "▶";
+        }
+      }
+
+      /* --- ANALOG VU METER ANIMATION --- */
+      let vuInterval = null;
+      function startVUAnimation() {
+        if (vuInterval) clearInterval(vuInterval);
+        vuInterval = setInterval(() => {
+          if (!isPlaying) return;
+          const angleL = -45 + Math.random() * 60;
+          const angleR = -45 + Math.random() * 65;
+          document.getElementById('vuNeedleL').style.transform = `rotate(${angleL}deg)`;
+          document.getElementById('vuNeedleR').style.transform = `rotate(${angleR}deg)`;
+
+          // Progress update
+          if (ytPlayer && ytPlayer.getCurrentTime) {
+            const cur = ytPlayer.getCurrentTime() || 0;
+            const dur = ytPlayer.getDuration() || 300;
+            const pct = (cur / dur) * 100;
+            document.getElementById('progressBar').style.width = `${pct}%`;
+            document.getElementById('currentTimeText').innerText = formatTime(cur);
+            document.getElementById('durationTimeText').innerText = formatTime(dur);
+          }
+        }, 120);
+      }
+
+      function stopVUAnimation() {
+        if (vuInterval) clearInterval(vuInterval);
+        document.getElementById('vuNeedleL').style.transform = `rotate(-45deg)`;
+        document.getElementById('vuNeedleR').style.transform = `rotate(-45deg)`;
+      }
+
+      function formatTime(sec) {
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return `${m}:${s < 10 ? '0' : ''}${s}`;
+      }
+
+      /* --- QUOTE CAROUSEL --- */
+      function renderQuotes() {
+        const indicators = document.getElementById('quoteIndicators');
+        indicators.innerHTML = QUOTES.map((_, i) => 
+          `<button onclick="setQuote(${i})" class="w-2 h-2 rounded-full transition-all ${i === currentQuoteIndex ? 'bg-amber-400 w-5' : 'bg-amber-500/30'}"></button>`
+        ).join('');
+      }
+
+      function setQuote(index) {
+        currentQuoteIndex = index;
+        const container = document.getElementById('quoteContainer');
+        container.style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('quoteText').innerText = QUOTES[index].text;
+          document.getElementById('quoteAuthor').innerText = QUOTES[index].author;
+          container.style.opacity = '1';
+          renderQuotes();
+        }, 300);
+      }
+
+      function nextQuote() {
+        setQuote((currentQuoteIndex + 1) % QUOTES.length);
+      }
+
+      function prevQuote() {
+        setQuote((currentQuoteIndex - 1 + QUOTES.length) % QUOTES.length);
+      }
+
+      setInterval(nextQuote, 6000);
+
+      /* --- RENDER TRACKS --- */
+      function renderTracks() {
+        const grid = document.getElementById('trackGrid');
+        const drawerList = document.getElementById('drawerTrackList');
+
+        grid.innerHTML = TRACKS.map((t, i) => `
+          <div onclick="loadTrack(${i})" class="glass-card rounded-2xl p-5 cursor-pointer hover:border-[#d9b382]/60 hover:bg-white/10 transition-all shadow-xl group relative overflow-hidden flex flex-col justify-between">
+            <div class="flex justify-between items-start mb-3">
+              <span class="w-8 h-8 rounded-lg bg-[#d9b382]/10 text-[#d9b382] font-mono text-xs flex items-center justify-center font-bold group-hover:bg-[#d9b382] group-hover:text-[#120c08] transition-colors">
+                0${i + 1}
+              </span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#8c4a2a]/30 text-[#d9b382] border border-[#d9b382]/30">
+                ${t.tag}
+              </span>
+            </div>
+
+            <div>
+              <h4 class="font-bold font-serif text-[#f5f2ed] group-hover:text-[#d9b382] transition-colors">
+                ${t.title}
+              </h4>
+              <p class="text-xs text-[#d9b382]/80 font-mono mt-1">${t.subtitle}</p>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-white/10 flex justify-between items-center text-xs font-mono text-[#f5f2ed]/60">
+              <span>📅 ${t.year}</span>
+              <span>⏱ ${t.duration}</span>
+            </div>
+          </div>
+        `).join('');
+
+        drawerList.innerHTML = TRACKS.map((t, i) => `
+          <div onclick="loadTrack(${i}); togglePlaylistDrawer();" class="p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 cursor-pointer flex items-center justify-between transition-colors">
+            <div class="flex items-center space-x-3">
+              <span class="text-xs font-mono text-[#d9b382] font-bold">0${i + 1}</span>
+              <div>
+                <h5 class="text-sm font-bold text-[#f5f2ed]">${t.title}</h5>
+                <p class="text-xs text-[#d9b382]/70 font-mono">${t.subtitle}</p>
+              </div>
+            </div>
+            <span class="text-xs font-mono text-[#f5f2ed]/60">${t.duration}</span>
+          </div>
+        `).join('');
+      }
+
+      function highlightActiveTrackCards() {
+        // Option to add highlight styles
+      }
+
+      /* --- MODALS & DRAWERS --- */
+      function togglePlaylistDrawer() {
+        const drawer = document.getElementById('playlistDrawer');
+        drawer.classList.toggle('opacity-0');
+        drawer.classList.toggle('pointer-events-none');
+      }
+
+      function openPoetryModal() {
+        const modal = document.getElementById('poetryModal');
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+      }
+
+      function closePoetryModal() {
+        const modal = document.getElementById('poetryModal');
+        modal.classList.add('opacity-0', 'pointer-events-none');
+      }
+
+      /* --- CANVAS AMBIENT STARS & CAMPFIRE SPARKS --- */
+      function initAmbientCanvas() {
+        const canvas = document.getElementById('ambientCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+
+        function resize() {
+          width = canvas.width = window.innerWidth;
+          height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Starfield
+        const stars = Array.from({ length: 90 }, () => ({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          size: Math.random() * 1.5 + 0.5,
+          alpha: Math.random(),
+          speed: Math.random() * 0.02 + 0.005
+        }));
+
+        // Embers / Campfire Sparks
+        const embers = Array.from({ length: 35 }, () => ({
+          x: Math.random() * width,
+          y: height + Math.random() * 100,
+          size: Math.random() * 2.5 + 1,
+          speedY: Math.random() * 1.2 + 0.4,
+          speedX: (Math.random() - 0.5) * 0.5,
+          alpha: Math.random() * 0.8 + 0.2
+        }));
+
+        function animate() {
+          ctx.clearRect(0, 0, width, height);
+
+          // Draw Stars
+          stars.forEach(s => {
+            s.alpha += s.speed;
+            if (s.alpha > 1 || s.alpha < 0) s.speed = -s.speed;
+            ctx.fillStyle = `rgba(251, 191, 36, ${Math.abs(s.alpha) * 0.7})`;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          // Draw Embers if enabled
+          if (isEmbersOn) {
+            embers.forEach(e => {
+              e.y -= e.speedY;
+              e.x += e.speedX;
+              if (e.y < -10) {
+                e.y = height + 10;
+                e.x = Math.random() * width;
+              }
+              ctx.fillStyle = `rgba(245, 158, 11, ${e.alpha})`;
+              ctx.beginPath();
+              ctx.arc(e.x, e.y, e.size, 0, Math.PI * 2);
+              ctx.fill();
+            });
+          }
+
+          requestAnimationFrame(animate);
+        }
+
+        animate();
+      }
+
+      /* --- KEYBOARD INTERACTIONS --- */
+      window.addEventListener('keydown', (e) => {
+        // Space bar play/pause
+        if (e.code === 'Space' && e.target.tagName !== 'INPUT') {
+          e.preventDefault();
+          togglePlayPause();
+        }
+        
+        // String keys 1-6 or A-H
+        const stringKeyMap = {
+          'Digit1': 0, 'KeyA': 0,
+          'Digit2': 1, 'KeyS': 1,
+          'Digit3': 2, 'KeyD': 2,
+          'Digit4': 3, 'KeyF': 3,
+          'Digit5': 4, 'KeyG': 4,
+          'Digit6': 5, 'KeyH': 5
+        };
+
+        if (stringKeyMap[e.code] !== undefined) {
+          pluckString(stringKeyMap[e.code]);
+        }
+
+        // Mute key
+        if (e.code === 'KeyM') {
+          toggleMute();
+        }
+
+        // Random song key
+        if (e.code === 'KeyR') {
+          const randIdx = Math.floor(Math.random() * TRACKS.length);
+          loadTrack(randIdx);
+        }
+      });
+
+      /* --- INITIALIZATION --- */
+      window.addEventListener('DOMContentLoaded', () => {
+        renderQuotes();
+        renderTracks();
+        initAmbientCanvas();
+        initYouTubeAPI();
+      });
+    </script>
+  </body>
+</html>
+
+
